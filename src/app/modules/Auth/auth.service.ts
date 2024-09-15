@@ -44,6 +44,20 @@ const loginUser = async (payload: TLoginUser) => {
 
   return { accessToken, needsPasswordChange: user?.needsPasswordChange };
 };
+
+
+const changePassword = (user: {userId: string, role:string}, payload)=>{
+
+const result = await User.findOneAndUpdate({
+  id: user.userId,
+  role : user.role
+
+})
+}
+
+
+
 export const AuthService = {
+  changePassword
   loginUser,
 };
