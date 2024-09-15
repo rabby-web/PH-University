@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
@@ -6,8 +6,8 @@ import { TLoginUser } from './auth.interface';
 
 const loginUser = async (payload: TLoginUser) => {
   // checking if the user exist---------
-  console.log(await User.isUserExistsByCustomId(payload.id));
-  if (!(await User.isUserExistsByCustomId(payload.id))) {
+  const user = await User.isUserExistsByCustomId(payload.id);
+  if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
   }
 
@@ -25,12 +25,10 @@ const loginUser = async (payload: TLoginUser) => {
   //   throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked!');
   // }
 
-  // // checking if the password correct
-  // const isPasswordMatched = await bcrypt.compare(
-  //   payload?.password,
-  //   isUserExists?.password,
-  // );
-  // console.log(isPasswordMatched);
+  // checking if the password correct
+  if (!(await User.isPasswordMatched(payload?.password, user?.password))) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Password dost match!');
+  }
 
   // Access Granted: Send AccessToken, RefreshToken
   console.log(payload);
