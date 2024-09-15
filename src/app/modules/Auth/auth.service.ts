@@ -35,7 +35,7 @@ const loginUser = async (payload: TLoginUser) => {
   // Access Granted: Send AccessToken, RefreshToken
   // create token
   const jwtPayload = {
-    userId: user,
+    userId: user.id,
     role: user.role,
   };
   const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
