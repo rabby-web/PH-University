@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
@@ -13,17 +14,24 @@ const loginUser = async (payload: TLoginUser) => {
 
   //  checking if the user is already deleted----------
   const isDeleted = isUserExists?.isDeleted;
-//   console.log('deleted //', isDeleted);
+  //   console.log('deleted //', isDeleted);
   if (isDeleted) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted!');
   }
 
   //  checking if the user is blocked----------
   const userStatus = isUserExists?.status;
-//   console.log('status //', userStatus);
+  //   console.log('status //', userStatus);
   if (userStatus === 'blocked') {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked!');
   }
+
+  // checking if the password correct
+  const isPasswordMatched = await bcrypt.compare(
+    payload?.password,
+    isUserExists?.password,
+  );
+  console.log(isPasswordMatched);
 
   // Access Granted: Send AccessToken, RefreshToken
   console.log(payload);
