@@ -39,9 +39,17 @@ const loginUser = async (payload: TLoginUser) => {
     userId: user.id,
     role: user.role,
   };
+
+  // access token
   const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
     expiresIn: '10d',
   });
+
+  // todo: ----------------------- video 12  time 8:37s
+  // refresh token
+  // const refreshToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
+  //   expiresIn: '10d',
+  // });
 
   return { accessToken, needsPasswordChange: user?.needsPasswordChange };
 };
