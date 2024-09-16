@@ -87,6 +87,7 @@ const changePassword = async (
     },
     {
       password: newHashedPassword,
+      needsPasswordChange: false,
     },
   );
   return null;
