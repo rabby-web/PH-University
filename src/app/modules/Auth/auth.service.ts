@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt';
 // import bcrypt from 'bcrypt';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
 import config from '../../config';
+import { createToken } from './auth.utils';
 
 const loginUser = async (payload: TLoginUser) => {
   // checking if the user exist---------
@@ -41,17 +42,24 @@ const loginUser = async (payload: TLoginUser) => {
   };
 
   // access token
-  const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
-    expiresIn: '10d',
-  });
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string,
+  );
 
-  // todo: ----------------------- video 12  time 8:37s
   // refresh token
-  // const refreshToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
-  //   expiresIn: '10d',
-  // });
+  const refreshToken = createToken(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expires_in as string,
+  );
 
-  return { accessToken, needsPasswordChange: user?.needsPasswordChange };
+  return {
+    accessToken,
+    refreshToken,
+    needsPasswordChange: user?.needsPasswordChange,
+  };
 };
 
 const changePassword = async (
