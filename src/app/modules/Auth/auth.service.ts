@@ -110,7 +110,12 @@ const changePassword = async (
   return null;
 };
 
+const refreshToken = async (token: string) => {
+  
+};
+
 export const AuthService = {
   changePassword,
   loginUser,
+  refreshToken,
 };
